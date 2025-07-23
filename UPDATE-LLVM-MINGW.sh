@@ -9,9 +9,10 @@ scripts_dir="/opt/llvm-mingw"
 llvm_mingw_dir="$scripts_dir/llvm-mingw"
 bin_dir="$llvm_mingw_dir/bin"
 dest_dir="/usr/local/bin"
+hook_path="/etc/apt/apt.conf.d/99update-llvm-mingw.conf"
 
 # Obtener JSON de GitHub release "nightly"
-json=$(sudo curl -s https://api.github.com/repos/mstorsjo/llvm-mingw/releases/tags/nightly)
+json=$(sudo curl -s --fail https://api.github.com/repos/mstorsjo/llvm-mingw/releases/tags/nightly)
 
 # Usar script Python para extraer la URL
 download_url=$(echo "$json" | sudo ./GET-NAME-LLVM-MINGW-RELEASE.py)
@@ -91,8 +92,8 @@ for prog in "${programs[@]}"; do
   echo "✅ Symlink creado: $dest → $src"
 done
 
-# Automatizando actualizaciones
-echo "Automatizando actualizaciones"
+# Copiando scripts
+echo "Copiando scripts"
 if [[ "$SCRIPT_DIR" != "$scripts_dir" ]]; then
     echo "Copiando archivos a $scripts_dir..."
 
@@ -102,6 +103,21 @@ if [[ "$SCRIPT_DIR" != "$scripts_dir" ]]; then
     # Copiar el script actual
     sudo cp "$SCRIPT_PATH" "$scripts_dir/"
     sudo cp "$SCRIPT_DIR/GET-NAME-LLVM-MINGW-RELEASE.py" "$scripts_dir/"
+fi
+
+# Automatizando actualizaciones
+echo "Automatizando actualizaciones"
+if [[ -f "$hook_path" ]]; then
+    echo "✅ Ya existe el hook en '$hook_path'. No se realiza ninguna acción."
+else
+    echo "🔧 Creando hook en '$hook_path'..."
+
+    # Crear el hook con contenido
+    sudo tee "$hook_path" > /dev/null <<EOF
+DPkg::Post-Invoke { "sudo bash '$script_path' || true"; };
+EOF
+
+    echo "✅ Hook creado exitosamente."
 fi
 
 # Eliminar archivos temporales
