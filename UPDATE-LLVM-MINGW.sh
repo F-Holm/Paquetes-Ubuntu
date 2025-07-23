@@ -9,7 +9,7 @@ scripts_dir="/opt/llvm-mingw"
 llvm_mingw_dir="$scripts_dir/llvm-mingw"
 bin_dir="$llvm_mingw_dir/bin"
 dest_dir="/usr/local/bin"
-hook_path="/etc/apt/apt.conf.d/99update-llvm-mingw.conf"
+hook_path="/etc/apt/apt.conf.d/80update-llvm-mingw.conf"
 
 # Obtener JSON de GitHub release "nightly"
 json=$(sudo curl -s --fail https://api.github.com/repos/mstorsjo/llvm-mingw/releases/tags/nightly)
@@ -84,7 +84,7 @@ for prog in "${programs[@]}"; do
   fi
 
   if [[ -L "$dest" || -f "$dest" ]]; then
-    echo "⚠️ Ya existe: $dest — saltando"
+    #echo "⚠️ Ya existe: $dest — saltando"
     continue
   fi
 
