@@ -11,14 +11,14 @@ bin_dir="$llvm_mingw_dir/bin"
 dest_dir="/usr/local/bin"
 
 # Obtener JSON de GitHub release "nightly"
-json=$(curl -s https://api.github.com/repos/mstorsjo/llvm-mingw/releases/tags/nightly)
+json=$(sudo curl -s https://api.github.com/repos/mstorsjo/llvm-mingw/releases/tags/nightly)
 
 # Usar script Python para extraer la URL
-download_url=$(echo "$json" | ./GET-NAME-LLVM-MINGW-RELEASE.py)
+download_url=$(echo "$json" | sudo ./GET-NAME-LLVM-MINGW-RELEASE.py)
 
 # Descargar el archivo
 echo "Descargando: $download_url"
-curl -LO "$download_url"
+sudo curl -LO "$download_url"
 
 # Extraerlo en el directorio correspondiente
 echo "Instalando..."
@@ -97,14 +97,14 @@ if [[ "$SCRIPT_DIR" != "$scripts_dir" ]]; then
     echo "Copiando archivos a $scripts_dir..."
 
     # Crear el directorio si no existe
-    mkdir -p "$scripts_dir"
+    sudo mkdir -p "$scripts_dir"
 
     # Copiar el script actual
-    cp "$SCRIPT_PATH" "$scripts_dir/"
-    cp "$SCRIPT_DIR/GET-NAME-LLVM-MINGW-RELEASE.py" "$scripts_dir/"
+    sudo cp "$SCRIPT_PATH" "$scripts_dir/"
+    sudo cp "$SCRIPT_DIR/GET-NAME-LLVM-MINGW-RELEASE.py" "$scripts_dir/"
 fi
 
 # Eliminar archivos temporales
 echo "Eliminando archivos temporales"
-rm ./llvm-mingw-*.tar.xz
+rm -f ./llvm-mingw-*.tar.xz
 rm -rf ./__pycache__
