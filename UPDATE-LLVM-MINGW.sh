@@ -106,5 +106,5 @@ fi
 
 # Eliminar archivos temporales
 echo "Eliminando archivos temporales"
-rm -f ./llvm-mingw-*.tar.xz
-rm -rf ./__pycache__
+sudo rm -f ./llvm-mingw-*.tar.xz
+sudo rm -rf ./__pycache__
