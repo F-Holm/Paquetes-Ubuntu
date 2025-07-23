@@ -91,6 +91,6 @@ done
 echo "Finalizado."
 
 # Eliminar archivos temporales
-echo "Eliminar archivos temporales"
+echo "Eliminando archivos temporales"
 rm ./llvm-mingw-*.tar.xz
 rm -rf ./__pycache__
