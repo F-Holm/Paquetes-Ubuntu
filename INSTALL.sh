@@ -38,7 +38,7 @@ read -rp "Nombre de usuario de GitHub: " nombre_usuario_github
 touch ~/.hushlogin
 
 # Paquetes fundamentales
-sudo apt install -y curl wget git
+sudo apt install -y curl wget git snapd
 
 # MySQL
 sudo wget https://dev.mysql.com/get/mysql-apt-config_0.8.32-1_all.deb
@@ -46,8 +46,7 @@ sudo dpkg -i mysql-apt-config_0.8.32-1_all.deb
 sudo apt update
 sudo apt install -y mysql-server
 sudo mysql_secure_installation
-sudo apt update
-sudo apt install -y mysql-workbench-community
+sudo snap install mysql-workbench-community
 sudo rm mysql-apt-config_0.8.32-1_all.deb
 
 # MongoDB
