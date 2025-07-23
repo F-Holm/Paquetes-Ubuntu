@@ -114,7 +114,7 @@ else
 
     # Crear el hook con contenido
     sudo tee "$hook_path" > /dev/null <<EOF
-DPkg::Post-Invoke { "sudo bash '$script_path' || true"; };
+DPkg::Post-Invoke { "sudo bash '$scripts_dir/UPDATE-LLVM-MINGW.sh' || true"; };
 EOF
 
     echo "✅ Hook creado exitosamente."
