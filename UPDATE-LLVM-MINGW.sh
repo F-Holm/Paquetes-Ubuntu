@@ -12,5 +12,14 @@ download_url=$(echo "$json" | ./GET-NAME-LLVM-MINGW-RELEASE.py)
 echo "Descargando: $download_url"
 curl -LO "$download_url"
 
+# Extraerlo en el directorio correspondiente
+llvm_mingw_dir="/opt/llvm-mingw"
+rm -rf "$llvm_mingw_dir"
+mkdir -p "$llvm_mingw_dir"
+tar -xf ./llvm-mingw-*.tar.xz -C "$llvm_mingw_dir" --strip-components=1
+rm ./llvm-mingw-*.tar.xz
+
+# Agregarlo al path del sistema
+
 # Limpiar caché de Python compilado
 rm -rf ./__pycache__
