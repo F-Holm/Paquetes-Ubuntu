@@ -86,6 +86,7 @@ sudo rm ./google-chrome-stable_current_amd64.deb
 # C++
 sudo apt install -y build-essential gcc g++ clang clang-format clang-tidy clangd clang-tools cmake make doxygen gdb graphviz ninja-build valgrind llvm ccache gcc-i686-linux-gnu g++-i686-linux-gnu gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf gcc-aarch64-linux-gnu g++-aarch64-linux-gnu mingw-w64
 sudo "$SCRIPT_DIR/CLANG-CROSS-COMPILING-WRAPPERS.sh"
+sudo "$SCRIPT_DIR/UPDATE-LLVM-MINGW.sh"
 
 # Extra
 sudo apt install -y openssl libssl-dev python3-pip python3-venv perl p7zip-full gimp codeblocks zeal vlc unattended-upgrades
