@@ -33,7 +33,6 @@ while true; do
 done
 read -rp "Mail de GitHub: " mail_github
 read -rp "Nombre de usuario de GitHub: " nombre_usuario_github
-read -rp "Ingresá el nombre de un archivo para listar: " archivo
 
 # Hacer que deje de aparecer mensaje diario
 touch ~/.hushlogin
