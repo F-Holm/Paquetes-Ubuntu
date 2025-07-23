@@ -2,8 +2,11 @@
 
 set -euo pipefail
 
-# Variables
-llvm_mingw_dir="/opt/llvm-mingw"
+# Constantes
+SCRIPT_PATH="$(realpath "$0")"
+SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
+scripts_dir="/opt/llvm-mingw"
+llvm_mingw_dir="$scripts_dir/llvm-mingw"
 bin_dir="$llvm_mingw_dir/bin"
 dest_dir="/usr/local/bin"
 
@@ -88,7 +91,18 @@ for prog in "${programs[@]}"; do
   echo "✅ Symlink creado: $dest → $src"
 done
 
-echo "Finalizado."
+# Automatizando actualizaciones
+echo "Automatizando actualizaciones"
+if [[ "$SCRIPT_DIR" != "$scripts_dir" ]]; then
+    echo "Copiando archivos a $scripts_dir..."
+
+    # Crear el directorio si no existe
+    mkdir -p "$scripts_dir"
+
+    # Copiar el script actual
+    cp "$SCRIPT_PATH" "$scripts_dir/"
+    cp "$SCRIPT_DIR/GET-NAME-LLVM-MINGW-RELEASE.py" "$scripts_dir/"
+fi
 
 # Eliminar archivos temporales
 echo "Eliminando archivos temporales"
