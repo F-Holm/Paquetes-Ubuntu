@@ -38,7 +38,7 @@ read -rp "Nombre de usuario de GitHub: " nombre_usuario_github
 touch ~/.hushlogin
 
 # Paquetes fundamentales
-sudo apt install -y curl wget git snapd
+sudo apt install -y curl wget git snapd ca-certificates
 
 # MySQL
 sudo wget https://dev.mysql.com/get/mysql-apt-config_0.8.32-1_all.deb
@@ -72,33 +72,31 @@ sudo wget https://dbeaver.io/files/25.0.3/dbeaver-ce_25.0.3_amd64.deb
 sudo apt install -y ./dbeaver-ce_25.0.3_amd64.deb
 sudo rm ./dbeaver-ce_25.0.3_amd64.deb
 
-# VS Code
-sudo wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-sudo echo "deb [arch=amd64] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
-sudo apt update
-sudo apt install -y code
-
-# Chrome
-sudo wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo apt install -y ./google-chrome-stable_current_amd64.deb
-sudo rm ./google-chrome-stable_current_amd64.deb
-
-# Docker (solo fuera de WSL)
+# Fuera de WSL2
 if [ -z "$WSL_INTEROP" ]; then
+    # VS Code
+    sudo wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+    sudo echo "deb [arch=amd64] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
+    sudo apt update
+    sudo apt install -y code
+
+    # Chrome
+    sudo wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    sudo apt install -y ./google-chrome-stable_current_amd64.deb
+    sudo rm ./google-chrome-stable_current_amd64.deb
+
+    # Docker
     # Add Docker's official GPG key:
     sudo apt-get update
-    sudo apt-get install ca-certificates curl
     sudo install -m 0755 -d /etc/apt/keyrings
     sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
     sudo chmod a+r /etc/apt/keyrings/docker.asc
-
     # Add the repository to Apt sources:
     echo \
         "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
         $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt-get update
-
     sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 fi
 
@@ -125,7 +123,6 @@ sudo wget -O discord.deb "https://discord.com/api/download?platform=linux&format
 sudo apt install -y ./discord.deb
 sudo rm ./discord.deb
 
-# Docker - NO USAR EN WSL
 
 # Final
 sudo apt update
