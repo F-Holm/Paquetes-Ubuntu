@@ -98,6 +98,21 @@ if [ -z "$WSL_INTEROP" ]; then
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt-get update
     sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+    # JetBrains
+    sudo snap install intellij-idea-community --classic
+    sudo snap install webstorm --classic
+    sudo snap install pycharm-community --classic
+
+    # Steam
+    sudo wget https://cdn.akamai.steamstatic.com/client/installer/steam.deb
+    sudo apt install -y ./steam.deb
+    sudo rm ./steam.deb
+
+    # Discord
+    sudo wget -O discord.deb "https://discord.com/api/download?platform=linux&format=deb"
+    sudo apt install -y ./discord.deb
+    sudo rm ./discord.deb
 fi
 
 # C++
@@ -107,22 +122,6 @@ sudo "$SCRIPT_DIR/UPDATE-LLVM-MINGW.sh"
 
 # Extra
 sudo apt install -y openssl libssl-dev python3-pip python3-venv perl p7zip-full gimp codeblocks zeal vlc unattended-upgrades
-
-# JetBrains
-sudo snap install intellij-idea-community --classic
-sudo snap install webstorm --classic
-sudo snap install pycharm-community --classic
-
-# Steam
-sudo wget https://cdn.akamai.steamstatic.com/client/installer/steam.deb
-sudo apt install -y ./steam.deb
-sudo rm ./steam.deb
-
-# Discord
-sudo wget -O discord.deb "https://discord.com/api/download?platform=linux&format=deb"
-sudo apt install -y ./discord.deb
-sudo rm ./discord.deb
-
 
 # Final
 sudo apt update
