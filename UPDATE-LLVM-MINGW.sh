@@ -29,7 +29,11 @@ sudo tar -xf ./llvm-mingw-*.tar.xz -C "$llvm_mingw_dir" --strip-components=1
 
 # Agregando LVM-Mingw al PATH del sistema
 echo "Creando symlinks en $dest_dir..."
-sudo ln -s /opt/llvm-mingw/llvm-mingw/bin/* /usr/local/bin/ 2>/dev/null || true
+sudo ln -s $bin_dir/x86_64-w64-* $dest_dir 2>/dev/null || true
+sudo ln -s $bin_dir/i686-w64-* $dest_dir 2>/dev/null || true
+sudo ln -s $bin_dir/aarch64-w64-* $dest_dir 2>/dev/null || true
+sudo ln -s $bin_dir/arm64ec-w64-* $dest_dir 2>/dev/null || true
+sudo ln -s $bin_dir/armv7-w64-* $dest_dir 2>/dev/null || true
 
 # Copiando scripts
 echo "Copiando scripts"
