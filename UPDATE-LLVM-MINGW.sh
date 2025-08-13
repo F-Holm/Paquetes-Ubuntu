@@ -34,27 +34,21 @@ sudo tar -xf ./llvm-mingw-*.tar.xz -C "$llvm_mingw_dir" --strip-components=1
 # Crear Wrappers
 mkdir -p "$dest_dir"
 
-# Función para crear wrapper
-crear_wrapper() {
-  local cmdname="$1"
-  local target="$2"
-  local wrapper_path="$dest_dir/$cmdname"
-
-  cat > "$wrapper_path" <<EOF
-#!/bin/bash
-exec "$target" "\$@"
-EOF
-  chmod +x "$wrapper_path"
-  echo "Wrapper creado: $wrapper_path -> $target"
-}
-
 # Obtener todos los clang, clang++, gcc y g++ que hay en bin_dir
 for bin in "$bin_dir"/*; do
   basebin=$(basename "$bin")
 
   if [[ "$basebin" =~ clang$ || "$basebin" =~ clang\+\+$ || "$basebin" =~ gcc$ || "$basebin" =~ g\+\+$ ]]; then
     # Crear wrapper con el mismo nombre
-    crear_wrapper "$basebin" "$bin"
+    wrapper_path="$dest_dir/$basebin"
+
+    cat > "$wrapper_path" <<EOF
+#!/bin/bash
+exec "$bin" \$@
+EOF
+    chmod +x "$wrapper_path"
+    echo "Wrapper creado: $wrapper_path -> $bin"
+    cat "$wrapper_path" > ./a.txt
   fi
 done
 
