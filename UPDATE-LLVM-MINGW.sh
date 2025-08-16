@@ -65,6 +65,9 @@ EOF
     echo "✅ Hook creado exitosamente."
 fi
 
+# Copiando archivos faltantes
+sudo cp $llvm_mingw_dir/lib/clang/22/include/mm_malloc.h $llvm_mingw_dir/x86_64-w64-mingw32/include/mm_malloc.h
+
 # Eliminar archivos temporales
 echo "Eliminando archivos temporales"
 sudo rm -f ./llvm-mingw-*.tar.xz
