@@ -2,7 +2,9 @@
 
 set -euo pipefail
 
-# Constantes
+# ==============================
+#  CONFIGURACIÓN Y CONSTANTES
+# ==============================
 SCRIPT_PATH="$(realpath "$0")"
 SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
 scripts_dir="/opt/llvm-mingw"
@@ -10,6 +12,27 @@ llvm_mingw_dir="$scripts_dir/llvm-mingw"
 bin_dir="$llvm_mingw_dir/bin"
 dest_dir="/usr/local/bin"
 hook_path="/etc/apt/apt.conf.d/99update-llvm-mingw.conf"
+last_run_file="$scripts_dir/.last_run"
+
+# ==============================
+#  CONTROL DE FRECUENCIA
+# ==============================
+# Si ya se ejecutó hoy, salir
+if [[ -f "$last_run_file" ]]; then
+    last_run=$(cat "$last_run_file")
+    now=$(date +%s)
+    diff=$(( now - last_run ))
+
+    if (( diff < 86400 )); then
+        echo "⏳ El script update-llvm-mingw ya se ejecutó en las últimas 24 horas. Abortando."
+        exit 0
+    fi
+fi
+
+# ==============================
+#  ACTUALIZACIÓN DE LLVM-MINGW
+# ==============================
+echo "🚀 Iniciando actualización de llvm-mingw..."
 
 # Obtener JSON de GitHub release "nightly"
 json=$(sudo curl -s --fail https://api.github.com/repos/mstorsjo/llvm-mingw/releases/tags/nightly)
@@ -18,18 +41,18 @@ json=$(sudo curl -s --fail https://api.github.com/repos/mstorsjo/llvm-mingw/rele
 download_url=$(echo "$json" | sudo "$SCRIPT_DIR/GET-NAME-LLVM-MINGW-RELEASE.py")
 
 # Descargar el archivo
-echo "Descargando: $download_url"
+echo "📦 Descargando: $download_url"
 sudo curl -LO "$download_url"
 
 # Extraerlo en el directorio correspondiente
-echo "Instalando..."
+echo "📂 Instalando..."
 sudo rm -rf "$llvm_mingw_dir"
 sudo mkdir -p "$llvm_mingw_dir"
 sudo tar -xf ./llvm-mingw-*.tar.xz -C "$llvm_mingw_dir" --strip-components=1
 
 # Crear Wrappers
 mkdir -p "$dest_dir"
-echo "Creando symlinks en $dest_dir..."
+echo "🔗 Creando symlinks en $dest_dir..."
 sudo ln -s $bin_dir/llvm-windres $dest_dir 2>/dev/null || true
 sudo ln -s $bin_dir/mingw32-common.cfg $dest_dir 2>/dev/null || true
 sudo ln -s $bin_dir/x86_64-w64-* $dest_dir 2>/dev/null || true
@@ -40,35 +63,37 @@ sudo ln -s $bin_dir/armv7-w64-* $dest_dir 2>/dev/null || true
 
 # Copiando scripts
 if [[ "$SCRIPT_DIR" != "$scripts_dir" ]]; then
-    echo "Copiando archivos a $scripts_dir..."
-
-    # Crear el directorio si no existe
+    echo "📁 Copiando archivos a $scripts_dir..."
     sudo mkdir -p "$scripts_dir"
-
-    # Copiar el script actual
     sudo cp "$SCRIPT_PATH" "$scripts_dir/"
     sudo cp "$SCRIPT_DIR/GET-NAME-LLVM-MINGW-RELEASE.py" "$scripts_dir/"
 fi
 
 # Automatizando actualizaciones
-echo "Automatizando actualizaciones"
+echo "⚙️  Verificando hook de APT..."
 if [[ -f "$hook_path" ]]; then
-    echo "✅ Ya existe el hook en '$hook_path'. No se realiza ninguna acción."
+    echo "✅ Ya existe el hook en '$hook_path'."
 else
-    echo "🔧 Creando hook en '$hook_path'..."
-
-    # Crear el hook con contenido
+    echo "🪛 Creando hook en '$hook_path'..."
     sudo tee "$hook_path" > /dev/null <<EOF
 APT::Update::Post-Invoke { "sudo bash '$scripts_dir/UPDATE-LLVM-MINGW.sh' || true"; };
 EOF
-
     echo "✅ Hook creado exitosamente."
 fi
 
 # Copiando archivos faltantes
-sudo cp $llvm_mingw_dir/lib/clang/22/include/mm_malloc.h $llvm_mingw_dir/x86_64-w64-mingw32/include/mm_malloc.h
+sudo cp "$llvm_mingw_dir/lib/clang/22/include/mm_malloc.h" "$llvm_mingw_dir/x86_64-w64-mingw32/include/mm_malloc.h"
 
 # Eliminar archivos temporales
-echo "Eliminando archivos temporales"
+echo "🧹 Eliminando archivos temporales..."
 sudo rm -f ./llvm-mingw-*.tar.xz
 sudo rm -rf ./__pycache__
+
+# ==============================
+#  GUARDAR FECHA DE EJECUCIÓN
+# ==============================
+echo "🕒 Guardando fecha de última ejecución..."
+sudo mkdir -p "$scripts_dir"
+date +%s | sudo tee "$last_run_file" > /dev/null
+
+echo "✅ Actualización completada correctamente."
