@@ -23,8 +23,8 @@ if [[ -f "$last_run_file" ]]; then
     now=$(date +%s)
     diff=$(( now - last_run ))
 
-    if (( diff < 86400 )); then
-        echo "⏳ El script update-llvm-mingw ya se ejecutó en las últimas 24 horas. Abortando."
+    if (( diff < 7*24*60*60 )); then
+        echo "⏳ El script update-llvm-mingw ya se ejecutó en los últimos 7 días. Abortando."
         exit 0
     fi
 fi
