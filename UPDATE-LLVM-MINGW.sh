@@ -15,16 +15,24 @@ hook_path="/etc/apt/apt.conf.d/99update-llvm-mingw.conf"
 last_run_file="$scripts_dir/.last_run"
 
 # ==============================
+#  PARÁMETROS
+# ==============================
+force=false
+if [[ "${1:-}" == "-f" ]]; then
+    force=true
+    echo "⚠️  Modo forzado activado: se ignora la restricción de 7 días."
+fi
+
+# ==============================
 #  CONTROL DE FRECUENCIA
 # ==============================
-# Si ya se ejecutó hoy, salir
-if [[ -f "$last_run_file" ]]; then
+if [[ -f "$last_run_file" && "$force" == false ]]; then
     last_run=$(cat "$last_run_file")
     now=$(date +%s)
     diff=$(( now - last_run ))
 
     if (( diff < 7*24*60*60 )); then
-        echo "⏳ El script update-llvm-mingw ya se ejecutó en los últimos 7 días. Abortando."
+        echo "⏳ El script update-llvm-mingw ya se ejecutó en los últimos 7 días. Usa '-f' para forzar."
         exit 0
     fi
 fi
