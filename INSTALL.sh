@@ -125,6 +125,9 @@ sudo "$SCRIPT_DIR/UPDATE-LLVM-MINGW.sh"
 # Extra
 sudo apt install -y openssl libssl-dev python3-pip python3-venv perl p7zip-full gimp codeblocks zeal vlc unattended-upgrades
 
+# Zona horaria
+sudo timedatectl set-timezone America/Argentina/Buenos_Aires
+
 # Final
 sudo apt update
 sudo apt install -f
