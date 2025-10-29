@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
@@ -46,7 +46,7 @@ echo "🚀 Iniciando actualización de llvm-mingw..."
 json=$(sudo curl -s --fail https://api.github.com/repos/mstorsjo/llvm-mingw/releases/tags/nightly)
 
 # Usar script Python para extraer la URL
-download_url=$(echo "$json" | sudo "$SCRIPT_DIR/GET-NAME-LLVM-MINGW-RELEASE.py")
+download_url=$(echo "$json" | sudo "$SCRIPT_DIR/LLVM-Mingw-get-release-name.py")
 
 # Descargar el archivo
 echo "📦 Descargando: $download_url"
