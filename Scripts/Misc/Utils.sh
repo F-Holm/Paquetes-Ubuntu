@@ -3,4 +3,5 @@
 sudo apt install -y \
     p7zip-full \
     gimp \
-    vlc
+    vlc \
+    ffmpeg
